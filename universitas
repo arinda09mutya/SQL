@@ -1,0 +1,45 @@
+CREATE DATABASE universitas;
+
+CREATE TABLE universitas.mahasiswa (
+    id_mahasiswa varchar(50) NOT NULL PRIMARY KEY,
+    nama_mahasiswa varchar(100) NOT NULL,
+    nilai_ujian int NOT NULL,
+    kelas varchar(100) NOT NULL,
+    gender varchar(100) NOT NULL
+);
+
+EXPLAIN universitas.mahasiswa;
+
+INSERT INTO universitas.mahasiswa VALUES 
+("A001","Amanda",65,"A","W"),
+("A002","Ashari",90,"A","P"),
+("A003","Nadia",60,"A","W"),
+("A004","Andi",40,"B","P"),
+("A005","Diana",75,"B","W"),
+("A006","Nisa",70,"B","W"),
+("A007","Aruman",80,"C","P"),
+("A008","Gilang",85,"C","P"),
+("A009","Reza",95,"C","P"); 
+
+SELECT * FROM universitas.mahasiswa;
+
+1. Rata-rata nilai semua mahasiswa
+SELECT AVG(nilai_ujian) FROM universitas.mahasiswa;
+-- ATAU
+SELECT AVG(nilai_ujian) AS rata_nilai_ujian FROM universitas.mahasiswa; -- AS disini digunakan untuk alias
+-- Rata-rata nilai setiap kelas
+SELECT kelas, AVG(nilai_ujian) FROM universitas.mahasiswa GROUP BY kelas;
+        
+2. Nilai terbesar dan terkecil semua mahasiswa
+SELECT min(nilai_ujian), max(nilai_ujian) FROM universitas.mahasiswa;
+Nilai terbesar dan terkecil setiap kelas
+SELECT kelas, min(nilai_ujian), max(nilai_ujian) FROM universitas.mahasiswa GROUP BY kelas; 
+		
+3. Jumlah mahasiswa bergender pria dan Wanita
+SELECT gender, count(*) AS jumlah_mahasiswa FROM universitas.mahasiswa GROUP BY gender;
+        
+4. Kelas yang memiliki nilai rata-rata diatas 70
+- rata-rata perkelas
+SELECT kelas, AVG(nilai_ujian) AS rata_nilai_ujian FROM universitas.mahasiswa GROUP BY kelas;
+- kelas yang memiliki nilai rata-rata diatas 70 -- tidak bisa menggunakan WHERE, karena agregat, jadi gunakan HAVING
+SELECT kelas, AVG(nilai_ujian) AS rata_nilai_ujian FROM universitas.mahasiswa GROUP BY kelas HAVING rata_nilai_ujian > 70;
