@@ -1,0 +1,63 @@
+CREATE DATABASE umkm;
+
+-- import file umkm_jabar.csv
+
+1. Check tabel umkm jabar
+SELECT * FROM umkm.umkm_jabar;
+
+2. Menunjukan data umkm di kota Bandung
+SELECT * FROM umkm.umkm_jabar WHERE nama_kabupaten_kota = "KOTA BANDUNG"; 
+
+3.  Tunjukan data umkm dari tahun 2019 dan disusun berdasarkan kategori_usaha!
+SELECT * FROM umkm.umkm_jabar WHERE tahun >= 2019 ORDER BY kategori_usaha, tahun;
+  3.1 Menambah limit row sampai 1000
+  SELECT * FROM umkm.umkm_jabar WHERE tahun >= 2019 ORDER BY kategori_usaha, tahun LIMIT 1000;
+
+4. Kategori_usaha apa saja yang tersedia di dalam dataset?
+SELECT DISTINCT kategori_usaha FROM umkm.umkm_jabar;
+
+5. Tunjukan seluruh data hanya kategori_usaha FASHION dan MAKANAN
+SELECT * FROM umkm.umkm_jabar WHERE kategori_usaha IN ("FASHION", "MAKANAN") ORDER BY kategori_usaha;
+
+6. Tunjukan seluruh data dengan kategori usaha FASHION di Kabupaten Karawang dari tahun 2017 hingga 2021
+SELECT * FROM umkm.umkm_jabar WHERE nama_kabupaten_kota = "KABUPATEN KARAWANG" AND kategori_usaha = "FASHION" ORDER BY tahun ASC;
+    
+7. Tunjukkan kabupaten/kota yang memiliki usaha Kuliner atau FASHION!
+SELECT nama_kabupaten_kota, kategori_usaha, jumlah_umkm, satuan, tahun FROM umkm.umkm_jabar WHERE kategori_usaha = "KULINER" OR kategori_usaha = "FASHION";
+
+8. Tunjukkan seluruh data selain kategori usaha kuliner, makanan dan minuman!
+SELECT * FROM umkm.umkm_jabar WHERE kategori_usaha NOT IN ("KULINER", "MAKANAN", "MINNUMAN");
+
+9. Apakah terdapat id yang memiliki jumlah_umkm yang tidak diketahui (NULL)?
+SELECT * FROM umkm.umkm_jabar WHERE jumlah_umkm IS NULL;
+
+10. Dari tahun 2018 s.d. 2020, bagaimana tren jumlah umkm di Kabupaten Tasikmalaya untuk kategori usaha Batik? 
+SELECT * FROM umkm.umkm_jabar WHERE nama_kabupaten_kota = "Kabupaten Tasikmalaya" AND kategori_usaha = "BATIK" AND tahun BETWEEN 2018 AND 2020 ORDER BY jumlah_umkm ASC;
+    
+11. Di antara Kota Bandung, Kabupaten Bandung dan Kabupaten Bandung Barat, di manakah umkm kuliner terpusat pada tahun 2021?
+SELECT * FROM umkm.umkm_jabar WHERE nama_kabupaten_kota LIKE "%bandung%" AND kategori_usaha = "KULINER" AND tahun = 2021 ORDER BY jumlah_umkm DESC;
+
+12. Kabupaten/Kota mana saja yang memiliki angka 7 pada digit ke 3 kode tersebut?
+SELECT kode_kabupaten_kota, nama_kabupaten_kota FROM umkm.umkm_jabar WHERE kode_kabupaten_kota LIKE "__7%";
+-- ATAU
+SELECT DISTINCT kode_kabupaten_kota, nama_kabupaten_kota FROM umkm.umkm_jabar WHERE kode_kabupaten_kota LIKE "__7%";
+        
+-- SQL Advance: Group By & Agregat --
+1. Berapa jumlah baris pada tabel umkm_jabar?
+SELECT count(*) AS jumlah_baris FROM umkm.umkm_jabar; -- (Jawaban: 1350 baris)
+    
+2. Berapa jumlah UMKM di Kabupaten Bekasi pada tahun 2017?
+SELECT sum(jumlah_umkm) AS jumlah_umkm_kab_bekasi_2017 FROM umkm.umkm_jabar WHERE nama_kabupaten_kota = "KABUPATEN BEKASI" AND tahun = 2017; -- (Jawaban: 245337 umkm)
+    
+3. Bagaimana tren jumlah UMKM di Kabupaten Karawang dari dari tahun 2017 s.d. 2021?
+SELECT tahun, sum(jumlah_umkm) AS jumlah_umkm_kab_karawang FROM umkm.umkm_jabar WHERE nama_kabupaten_kota = "KABUPATEN KARAWANG" AND tahun BETWEEN 2017 AND 2021 GROUP BY tahun ORDER BY tahun ASC;
+    
+4. Berapa jumlah rata-rata UMKM setiap kategori usaha per kab/kota di jawa barat dari tahun ke tahun?
+SELECT tahun, kategori_usaha, avg(jumlah_umkm) AS rata_umkm_per_kab_kota FROM umkm.umkm_jabar GROUP BY tahun, kategori_usaha ORDER BY kategori_usaha, tahun ASC;
+    
+5. Kategori usaha dengan jumlah_umkm terbanyak dan tersedikit di Kabupaten Sukabumi pada tahun 2021?
+SELECT * FROM umkm.umkm_jabar WHERE nama_kabupaten_kota = "KABUPATEN SUKABUMI" AND tahun = 2021 ORDER BY jumlah_umkm DESC;  -- (Jawaban: 121)
+    
+6. Kabupaten kota dengan jumlah UMKM kurang dari 100.000 pada tahun 2020
+SELECT nama_kabupaten_kota, SUM(jumlah_umkm) AS jumlah_umkm FROM umkm.umkm_jabar WHERE tahun = 2020 GROUP BY nama_kabupaten_kota HAVING jumlah_umkm < 100000;
+    
